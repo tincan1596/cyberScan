@@ -37,5 +37,5 @@ jobs:
       - name: Run Forge tests
         if: ${{ false }}
         run: |
-          forge test -vvv --allow-failure
+          forge test -vvv 
         id: test
