@@ -12,7 +12,7 @@ contract vault {
     }
 
     function deposit() public payable {
-        require(msg.value > 0, "deposite must be greater tha n0");
+        require(msg.value > 0, "deposite must be greater than 0");
         balances[msg.sender] += msg.value;
     }
     
