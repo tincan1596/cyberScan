@@ -18,7 +18,7 @@ contract TimeLock {
     // Withdraw function that checks the timelock condition
     function withdraw(uint256 amount) external {
         require(balances[msg.sender] >= amount, "Insufficient balance");
-        require(block.timestamp >= timestamps[msg.sender] , "Withdrawal is locked");
+        require(block.timestamp >= timestamps[msg.sender], "Withdrawal is locked");
 
         balances[msg.sender] -= amount;
         timestamps[msg.sender] = block.timestamp + TimeLimit;
