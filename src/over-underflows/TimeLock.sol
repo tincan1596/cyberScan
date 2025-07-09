@@ -8,9 +8,10 @@ contract TimeLock {
     mapping(address => uint256) public balances;
     mapping(address => uint256) public timestamps;
     uint256 public TimeLimit = 1 weeks;
+    error ZeroAmountNotAllowed();
 
     function deposit() external payable {
-        require(msg.value > 0, "Deposit must be greater than 0");
+        if(msg.value == 0){ revert ZeroAmountNotAllowed();}
         balances[msg.sender] += msg.value;
         timestamps[msg.sender] = block.timestamp + TimeLimit;
     }
