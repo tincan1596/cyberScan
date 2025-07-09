@@ -26,7 +26,7 @@ contract VaultSafe {
         balances[msg.sender] -= amount;
         lastWithdrawTime[msg.sender] = block.timestamp;
 
-        (bool sent, ) = msg.sender.call{value: amount}("");
+        (bool sent,) = msg.sender.call{value: amount}("");
         require(sent, "Transfer failed");
     }
 

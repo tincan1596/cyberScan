@@ -15,22 +15,22 @@ contract vault {
         require(msg.value > 0, "deposite must be greater than 0");
         balances[msg.sender] += msg.value;
     }
-    
+
     function withdraw(uint256 amount) external {
         require(balances[msg.sender] >= amount, "insufficient balance");
         require(block.timestamp >= timestamps[msg.sender] + timelimit, "minimum cooldown period in 1 week");
         require(amount <= maxwithdraw, "withdrawal amount exceeds limit");
 
         // interacting the the EOA or other contract account before updating the state lead to Re-Entrancy attack
-        (bool success, )= msg.sender.call{value: amount}("");
+        (bool success,) = msg.sender.call{value: amount}("");
         require(success, "withdraw failed");
 
         // state change after interaction
         balances[msg.sender] -= amount;
         timestamps[msg.sender] = block.timestamp;
     }
-    
-    function getbalance( address user) external view returns (uint256) {
+
+    function getbalance(address user) external view returns (uint256) {
         return balances[user];
     }
 }

