@@ -9,6 +9,7 @@ contract EtherGame {
     uint256 public constant MinEther = 0.5 ether;
     uint256 public constant MaxEther = 10 ether;
     uint256 private currentBalance = address(this).balance;
+    bool private locked;
 
     receive() external payable {
         deposit();
@@ -25,11 +26,10 @@ contract EtherGame {
         }
     }
 
-    function withdraw() external {
-        require(currentBalance > 0, "No ether to withdraw");
-        uint256 amount = currentBalance;
-        currentBalance = 0;
-        (bool success,) = msg.sender.call{value: amount}("");
-        require(success, "failed");
+    modifier noReentrancy() {
+        require(!locked, "No reentrancy");
+        locked = true;
+        _;
+        locked = false;
     }
 }
