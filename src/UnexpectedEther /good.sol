@@ -6,6 +6,7 @@ contract EtherGame {
     uint256 public constant MaxEther = 10 ether;
     uint256 private currentBalance = 0;
     bool private locked;
+    mapping(address => uint256) public playerBalances;
 
     receive() external payable {
         deposit();
@@ -22,11 +23,26 @@ contract EtherGame {
         require(msg.value == stake, "0.5 ether only");
         if (currentBalance < MaxEther) {
             currentBalance += msg.value;
+            playerBalances[msg.sender] += msg.value;
         } else {
             uint256 balance = currentBalance;
-            require(currentBalance >= MaxEther, "Not enough ether to reward");
+            require(currentBalance == MaxEther, "reward != 10 ether");
+            require(address(this).balance >= currentBalance, "Insufficient contract balance");
+            currentBalance = 0;
             (bool success,) = msg.sender.call{value: balance}("");
             require(success, "Transfer failed");
         }
+    }
+
+    function withdraw() external noReentrancy {
+        uint256 playerBalance = playerBalances[msg.sender];
+        require(playerBalance > 0, "No ether to withdraw");
+        playerBalances[msg.sender] = 0;
+        (bool success,) = msg.sender.call{value: playerBalance}("");
+        require(success, "Transfer failed");
+    }
+
+    function getCurrentBalance() external view returns (uint256) {
+        return playerBalances[msg.sender];
     }
 }
