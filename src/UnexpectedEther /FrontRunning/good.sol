@@ -6,6 +6,7 @@ contract EtherGame {
     uint256 public constant MaxEther = 10 ether;
     uint256 private currentBalance = 0;
     bool private locked;
+    address public winner; // prevents front running by marking the winner explicitly
     mapping(address => uint256) public playerBalances;
 
     receive() external payable {
@@ -24,12 +25,17 @@ contract EtherGame {
         currentBalance += msg.value;
         playerBalances[msg.sender] += msg.value;
         if (currentBalance < MaxEther) {} else {
-            require(currentBalance == MaxEther, "reward != 10 ether");
-            require(address(this).balance >= currentBalance, "Insufficient contract balance");
-            currentBalance = 0;
-            (bool success,) = msg.sender.call{value: MaxEther}("");
-            require(success, "Transfer failed");
+            reward();
         }
+    }
+
+    function reward() internal noReentrancy {
+        winner = msg.sender;
+        require(currentBalance == MaxEther, "reward != 10 ether");
+        require(address(this).balance >= currentBalance, "Insufficient contract balance");
+        currentBalance = 0;
+        (bool success,) = winner.call{value: MaxEther}("");
+        require(success, "Transfer failed");
     }
 
     function withdraw() external noReentrancy {
