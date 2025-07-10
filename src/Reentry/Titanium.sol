@@ -4,6 +4,7 @@ pragma solidity ^0.8.30;
 contract VaultSafe {
     uint256 public constant WEEK = 7 days;
     uint256 public constant MAX_WITHDRAW = 1 ether;
+    bool private locked;
 
     mapping(address => uint256) public balances;
     mapping(address => uint256) public lastWithdrawTime;
@@ -12,12 +13,21 @@ contract VaultSafe {
         deposit();
     }
 
+    // using the explicit noReentrancy modifier to prevent reentrancy attacks
+
+    modifier noReentrancy() {
+        require(!locked, "No reentrancy");
+        locked = true;
+        _;
+        locked = false;
+    }
+
     function deposit() public payable {
         require(msg.value > 0, "Must deposit something");
         balances[msg.sender] += msg.value;
     }
 
-    function withdraw(uint256 amount) public {
+    function withdraw(uint256 amount) public noReentrancy {
         require(amount <= balances[msg.sender], "Insufficient balance");
         require(amount <= MAX_WITHDRAW, "Exceeds weekly limit");
         require(block.timestamp >= lastWithdrawTime[msg.sender] + WEEK, "Withdraw too soon");
