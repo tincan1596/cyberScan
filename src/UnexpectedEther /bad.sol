@@ -17,7 +17,7 @@ contract EtherGame {
     function deposit() public payable {
         require(msg.value >= MinEther, "0.5 ether only");
         if (currentBalance < MaxEther) {
-            currentBalance = address(this).balance + msg.value;
+            currentBalance += msg.value;
         } else {
             currentBalance = 0;
             (bool success,) = msg.sender.call{value: 10 ether}("");
