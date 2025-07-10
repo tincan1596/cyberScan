@@ -20,7 +20,7 @@ contract EtherGame {
             currentBalance = address(this).balance + msg.value;
         } else {
             currentBalance = 0;
-            (bool success,) = msg.sender.call{value: 10}("");
+            (bool success,) = msg.sender.call{value: 10 ether}("");
             require(success, "failed");
         }
     }
