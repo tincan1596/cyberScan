@@ -7,6 +7,10 @@ contract EtherGame {
     uint256 private currentBalance = 0;
     bool private locked;
     address public winner;
+
+    // we can still add logging to the cantract to track player balances
+    // but it is not necessary for the game logic, since we are not deploying it.
+
     mapping(address => uint256) public playerBalances;
 
     receive() external payable {
