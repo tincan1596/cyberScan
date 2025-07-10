@@ -6,7 +6,7 @@ contract EtherGame {
     uint256 public constant MaxEther = 10 ether;
     uint256 private currentBalance = 0;
     bool private locked;
-    address public winner; // prevents front running by marking the winner explicitly
+    address public winner;
     mapping(address => uint256) public playerBalances;
 
     receive() external payable {
@@ -25,6 +25,7 @@ contract EtherGame {
         currentBalance += msg.value;
         playerBalances[msg.sender] += msg.value;
         if (currentBalance < MaxEther) {} else {
+            require(currentBalance + msg.value == MaxEther, "reward != 10 ether");
             reward();
         }
     }

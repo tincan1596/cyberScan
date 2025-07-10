@@ -19,8 +19,9 @@ contract EtherGame {
         locked = false;
     }
 
-    // the prefund / self-destruct are gone but avoiding them opens possibility of front running, so we need to mark the winner explicitly
-    // that is done the the good.sol contract.
+    // this contract still needs and iverflow gaurd to prevent multiple winners and
+    // to prevent the contract from being drained by a malicious player by front running the deposit function
+    // it is fixed in the good.sol
 
     function deposit() public payable noReentrancy {
         require(msg.value == stake, "0.5 ether only");
