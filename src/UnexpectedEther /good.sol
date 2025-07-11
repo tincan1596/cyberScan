@@ -35,7 +35,7 @@ contract EtherGame {
         }
     }
 
-    function reward() internal noReentrancy {
+    function reward() internal {
         require(currentBalance == MaxEther, "reward != 10 ether");
         require(address(this).balance >= currentBalance, "Insufficient contract balance");
         currentBalance = 0;
