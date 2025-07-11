@@ -30,12 +30,12 @@ contract EtherGame {
         playerBalances[msg.sender] += msg.value;
         if (currentBalance < MaxEther) {} else {
             require(currentBalance + msg.value == MaxEther, "reward != 10 ether");
+            winner = msg.sender;
             reward();
         }
     }
 
     function reward() internal noReentrancy {
-        winner = msg.sender;
         require(currentBalance == MaxEther, "reward != 10 ether");
         require(address(this).balance >= currentBalance, "Insufficient contract balance");
         currentBalance = 0;
