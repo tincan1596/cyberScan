@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.30;
 
-contract dice{
+contract dice {
     bool public payout;
-    uint public price;
+    uint256 public price;
     address public winner;
 
     // .. some game logic here
@@ -22,7 +22,7 @@ contract dice{
 
     function withdraw() external {
         require(payout, "Payout not available");
-        (bool ok, ) = msg.sender.call{value: address(this).balance}("");
+        (bool ok,) = msg.sender.call{value: address(this).balance}("");
         require(ok, "Transfer failed");
     }
 }
