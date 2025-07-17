@@ -10,7 +10,8 @@ contract dice {
 
     function award() internal {
         require(!payout, "Payout not available");
-        payable(winner).send(price); // This line is vulnerable to unchecked call return
+        bool ok = payable(winner).send(price); // This line is vulnerable to unchecked call return
+        require(ok, "Transfer failed");
         // The send function returns false if the transfer fails, but this is not checked
         // This can lead to a situation where the payout is not actually sent, but the state
         // is updated to reflect that a payout has occurred, leading to potential loss of funds.
